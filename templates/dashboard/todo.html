@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{%block title%}Todo{%endblock%}
+{%block content%}
+
+<br>
+
+<div class="card w-75 mx-auto">
+
+    <div class="card-header">
+        <h1>Todo</h1>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-secondary">
+            <thead>
+                <tr>
+                    <th scope="col">Date Created</th>
+                    <th scope="col">Date Due</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Content</th>
+                    <th scope="col">Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    <td>
+                        <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#todoCollapse" aria-expanded="false" aria-controls="ideaCollapse">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="collapse" id="todoCollapse"> <!--TODO: Make Collapsible-->
+                <form action="/dashboard/todos" method="POST">
+                    {% csrf_token %}
+                    <td scope="row">
+                        Today
+                    </td>
+                    <td>
+                        {{form.dateDue}}
+                    </td>
+                    <td>
+                        {{form.category}}
+                    </td>
+                    <td>
+                        {{form.content}}
+                    </td>   
+                    <td>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Submit Todo
+                        </button>
+                    </td>
+                </form>
+                </tr>
+
+
+
+                {% for todo in todos reversed%}
+                <tr>
+                    <td>{{todo.dateCreated}}</td>
+                    <td>{{todo.dateDue}}</td>
+                    <td>{{todo.category}}</td>
+                    <td>{{todo.content}}</td>
+
+                    <td>
+                    <a href="toggleTodoCompleted/{{todo.id}}">
+                        {% if todo.completed %}
+                            <i class="fa fa-check-square text-dark"></i>
+                        {% else %}
+                            <i class="fa fa-square text-dark"></i>
+                        {% endif %}
+                    </a>
+                    </td>
+                    <td>
+                        <a href="removeTodo/{{todo.id}}"><i class="fa fa-times text-dark"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tr>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+
+{%endblock%}
+
