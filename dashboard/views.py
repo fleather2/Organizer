@@ -31,7 +31,30 @@ def ideas(request):
     return render(request, "ideas.html", {'form' : form, 'ideas': ideas})
 
 def removeIdea(request, idea):
-    i = Idea.objects.filter(id=idea).get().delete()
+
+    i = Idea.objects.get(id=idea).delete()
+    return redirect('/dashboard/ideas')
+
+def editIdea(request, idea):
+
+    i = Idea.objects.get(id=idea)
+    
+    if request.method == 'POST':
+        editIdea = IdeaForm(request.POST)
+
+        if editIdea.is_valid():
+            new_category = editIdea.cleaned_data.get("category")
+            new_content = editIdea.cleaned_data.get("content")
+           
+            if len(new_category) > 0:
+                i.category=new_category
+
+            if len(new_content) > 0:
+                i.content=new_content
+
+            i.save()
+    
+    
     return redirect('/dashboard/ideas')
 
 def todos(request):
@@ -62,6 +85,31 @@ def toggleTodoCompleted(request, todo):
     t = Todo.objects.get(id=todo)
     t.completed = not(t.completed)
     t.save()
+    return redirect('/dashboard/todos')
+
+def editTodo(request, todo):
+
+    t = Todo.objects.get(id=todo)
+
+    if request.method == 'POST':
+        editTodo = TodoForm(request.POST)
+
+        if editTodo.is_valid():
+            new_category = editTodo.cleaned_data.get("category")
+            new_content = editTodo.cleaned_data.get("content")
+            new_dateDue = editTodo.cleaned_data.get("dateDue")
+
+            if len(new_category) > 0:
+                t.category = new_category
+
+            if len(new_content) > 0:
+                t.content = new_content
+            
+            if new_dateDue:
+                t.dateDue = new_dateDue
+
+            t.save()
+
     return redirect('/dashboard/todos')
 
 def calendar(request):
